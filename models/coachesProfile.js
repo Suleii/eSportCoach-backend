@@ -21,6 +21,7 @@ const coachProfileSchema = mongoose.Schema({
         discord: String,        
             },
     about: String,
+    experience: [String],
     reviews: [{type:mongoose.Schema.Types.ObjectId, ref: 'reviews'}],
     rating: Number,
 });
