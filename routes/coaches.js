@@ -4,10 +4,10 @@ const CoachProfile = require('../models/coachesProfile');
 const UserLogin = require('../models/usersLogin');
 
 
-/*dans le fichier coaches.js, créer une route POST /profile 
-qui ajoute un nouveau document à la collection Coach Profile*/
+// Create a POST /profile route to add a new document to the coach profile collection
 router.post('/profile', (req, res) => {
-  
+
+    // Create a new instance of the coachProfile model
     const newCoachProfile = new CoachProfile({
         lastname: req.body.lastname,
         firstname: req.body.firstname,
@@ -26,20 +26,43 @@ router.post('/profile', (req, res) => {
         reviews: req.body.reviews,
     });
 
+    // Save the new profile in the database 
     newCoachProfile.save()
     .then(data => {
         res.json(data)
     })
 });
   
-router.get('/profile/:username', (req, res) => {
-    UserLogin.findOne({username: req.params.coach})
+// Create a GET /profile route to collect the coach informations via his username
+router.get('/profile/:coach', (req, res) => {
+    // Search the user ID via his username
+    UserLogin.findOne({username: req.params.coach}) 
     .then(user => {
-    console.log(user)
-    CoachProfile.findOne({user:user._id}).populate('user')
-    .then (coach =>{
-    console.log(coach)
-    res.json({result:true, coach})
-      });})})
+        // Search coach ID via his user ID 
+        CoachProfile.findOne({user:user._id}).populate('user') 
+        .then (coach =>{
+        console.log(coach)
+        res.json({result:true, profile: coach})
+        })
+    })
+})
+
+    router.delete('/profile/:coach', (req, res) => {
+        // Search user ID via username
+        UserLogin.deleteOne({username: req.params.coach}) 
+        .then(user => {
+        // Delete the coach profile by user ID
+        CoachProfile.deleteOne({user:user._id}).populate('user')
+         .then(deletedProfile => {
+            if (!deletedProfile) {
+             // Profile not found, send a 404 response
+            res.json({ result: false, message: 'Coach profile not found' });
+            } else {
+            // Profile was successfully deleted, send a success response
+            res.json({ result: true, message: 'Coach profile deleted successfully' });
+            }
+        })
+    });
+})
 
 module.exports = router;
