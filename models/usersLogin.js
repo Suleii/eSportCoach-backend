@@ -8,6 +8,6 @@ const userLoginSchema = mongoose.Schema({
     canEdit: Boolean,
 });
 
-const UserLogin = mongoose.model('usersLogin', userLoginSchema);
+const UserLogin = mongoose.model('userslogins', userLoginSchema);
 
 module.exports = UserLogin;
