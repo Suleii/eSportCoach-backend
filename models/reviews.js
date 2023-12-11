@@ -4,7 +4,7 @@ const reviewSchema = mongoose.Schema({
     game: String,
     username: {type:mongoose.Schema.Types.ObjectId, ref: 'usersLogin'},
     photo: {type:mongoose.Schema.Types.ObjectId, ref: 'userProfile'},
-    coach: {type:mongoose.Schema.Types.ObjectId, ref: 'coachProfile'},
+    coach: {type:mongoose.Schema.Types.ObjectId, ref: 'coachesProfile'},
     content: String,
     rating: { type: Number, min: 1, max: 5 },
 });
