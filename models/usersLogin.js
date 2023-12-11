@@ -10,6 +10,6 @@ const userLoginSchema = mongoose.Schema({
     
 });
 
-const UserLogin = mongoose.model('usersLogin', userLoginSchema);
+const UserLogin = mongoose.model('userslogins', userLoginSchema);
 
 module.exports = UserLogin;

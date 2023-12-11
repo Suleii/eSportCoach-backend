@@ -5,8 +5,14 @@ const coachProfileSchema = mongoose.Schema({
     firstname: String,
     email: String,
     photo: String,
-    user: {type:mongoose.Schema.Types.ObjectId, ref: 'usersLogin'},
+    user: {type:mongoose.Schema.Types.ObjectId, ref: 'userslogins'},
     games: [String],
+    price: {
+        oneSession: Number,
+        tenSessions: Number,
+        pneGroupSession: Number,
+        tenGroupSessions: Number,
+    },
     bookings: [{type:mongoose.Schema.Types.ObjectId, ref: 'bookings'}],
     socials: {
         twitch: String,
@@ -16,8 +22,9 @@ const coachProfileSchema = mongoose.Schema({
             },
     about: String,
     reviews: [{type:mongoose.Schema.Types.ObjectId, ref: 'reviews'}],
+    rating: Number,
 });
 
-const CoachProfile = mongoose.model('coachessProfile', CoachProfileSchema);
+const CoachProfile = mongoose.model('coachesprofile', coachProfileSchema);
 
 module.exports = CoachProfile;
