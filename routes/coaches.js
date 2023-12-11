@@ -1,13 +1,14 @@
 var express = require('express');
 var router = express.Router();
 const CoachProfile = require('../models/coachesProfile'); 
+const UserLogin = require('../models/usersLogin');
+
 
 /*dans le fichier coaches.js, créer une route POST /profile 
 qui ajoute un nouveau document à la collection Coach Profile*/
-router.post('/profile', (req,res) => {
-   
-      // Créez une nouvelle instance du modèle CoachProfile
-      const newProfile = new CoachProfile({
+router.post('/profile', (req, res) => {
+  
+    const newCoachProfile = new CoachProfile({
         lastname: req.body.lastname,
         firstname: req.body.firstname,
         email: req.body.email,
@@ -16,45 +17,29 @@ router.post('/profile', (req,res) => {
         games: req.body.games,
         bookings: req.body.bookings,
         socials: {
-            twitch: req.body.socials.twitch,
-            instagram: req.body.socials.instagram,
-            youtube: req.body.socials.youtube,
-            discord: req.body.socials.discord,
+            twitch: req.body.twitch,
+            instagram: req.body.instagram,
+            youtube: req.body.youtube,
+            discord: req.body.discord,
         },
         about: req.body.about,
         reviews: req.body.reviews,
     });
-    newProfile.save()
-    .then(data => {
-      // Répondez avec le profil enregistré
-      res.json(data);
-    });})
-    
- 
-  
-  
-// Route to get a user marker via his nickname
-router.get('/places/:nickname', (req, res) => {
-    Marker.find({nickname: req.params.nickname})
-    .then(data => {
-        if (data) {
-            res.json ({result: true, places: data});
-        } else {
-          res.json ({result: false, error: 'Marker not found'});
-        }
-    })
-})
 
-// Route to delete marker via user's nickname and name
-router.delete('/places', (req, res) => {
-    const { nickname, name } = req.body;
+    newCoachProfile.save()
+    .then(data => {
+        res.json(data)
+    })
+});
   
-    Marker.deleteOne({ nickname, name })
-      .then(() => {
-          res.json({ result: true });
-        })
-      })
-  
- 
+router.get('/profile/:username', (req, res) => {
+    UserLogin.findOne({username: req.params.coach})
+    .then(user => {
+    console.log(user)
+    CoachProfile.findOne({user:user._id}).populate('user')
+    .then (coach =>{
+    console.log(coach)
+    res.json({result:true, coach})
+      });})})
 
 module.exports = router;
