@@ -18,6 +18,6 @@ const coachProfileSchema = mongoose.Schema({
     reviews: [{type:mongoose.Schema.Types.ObjectId, ref: 'reviews'}],
 });
 
-const CoachProfile = mongoose.model('coachessProfile', CoachProfileSchema);
+const CoachProfile = mongoose.model('coachesProfile', CoachProfileSchema);
 
 module.exports = CoachProfile;
