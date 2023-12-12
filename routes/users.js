@@ -22,6 +22,7 @@ router.post('/signup', (req, res) => {
         firstname: req.body.firstname,
         username: req.body.username,
         password: hash,
+        isCoach: req.body.isCoach,
         token: uid2(32),
       });
 
