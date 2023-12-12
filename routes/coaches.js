@@ -37,20 +37,20 @@ router.post('/profile', (req, res) => {
 router.get('/profile/:coach', (req, res) => {
     // Search the user ID via his username
     UserLogin.findOne({username: req.params.coach}) 
-    .then(user => {
+    .then(user => { 
         // Search coach ID via his user ID 
-        CoachProfile.findOne({user:user._id}).populate('user') 
+        CoachProfile.findOne({user:user._id}).populate('user').populate('reviews') 
         .then (coach =>{
         console.log(coach)
         res.json({result:true, profile: coach})
         })
-    })
+    }) 
 })
 
     router.delete('/profile/:coach', (req, res) => {
         // Search user ID via username
         UserLogin.deleteOne({username: req.params.coach}) 
-        .then(user => {
+        .then(user => { 
         // Delete the coach profile by user ID
         CoachProfile.deleteOne({user:user._id}).populate('user')
          .then(deletedProfile => {
