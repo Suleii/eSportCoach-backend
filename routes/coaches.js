@@ -39,13 +39,13 @@ router.get('/profile/:coach', (req, res) => {
     UserLogin.findOne({username: req.params.coach}) 
     .then(user => {
         // Search coach ID via his user ID 
-        CoachProfile.findOne({user:user._id}).populate('user') 
+        CoachProfile.findOne({user:user._id}).populate('user')
         .then (coach =>{
         console.log(coach)
         res.json({result:true, profile: coach})
         })
     })
-})
+});
 
     router.delete('/profile/:coach', (req, res) => {
         // Search user ID via username
@@ -64,5 +64,46 @@ router.get('/profile/:coach', (req, res) => {
         })
     });
 })
+
+router.put('/profile/:coach', (req, res) => {
+    // Search the user ID via his username
+    UserLogin.findOne({ username: req.params.coach })
+        .then(user => {
+            if (!user) {
+                res.json({ result: false, message: 'User not found' });
+                return;
+            }
+
+            // Update the coach profile by user ID
+            CoachProfile.updateOne({ user: user._id },
+                {
+                    $set: {
+                        lastname: req.body.lastname,
+                        firstname: req.body.firstname,
+                        email: req.body.email,
+                        photo: req.body.photo,
+                        games: req.body.games,
+                        socials: {
+                            twitch: req.body.twitch,
+                            instagram: req.body.instagram,
+                            youtube: req.body.youtube,
+                            discord: req.body.discord,
+                        },
+                        about: req.body.about,
+                    },
+                },
+                { new: true })
+                .populate('user')
+                .then(updatedProfile => {
+                    if (!updatedProfile) {
+                        // Profile not found, send a 404 response
+                        res.json({ result: false, message: 'Coach profile not found' });
+                    } else {
+                        // Profile was successfully updated, send the updated profile
+                        res.json({ result: true, profile: updatedProfile });
+                    }
+                })
+            });
+        });
 
 module.exports = router;
