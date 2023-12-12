@@ -10,7 +10,7 @@ const coachProfileSchema = mongoose.Schema({
     price: {
         oneSession: Number,
         tenSessions: Number,
-        pneGroupSession: Number,
+        oneGroupSession: Number,
         tenGroupSessions: Number,
     },
     bookings: [{type:mongoose.Schema.Types.ObjectId, ref: 'bookings'}],
@@ -21,6 +21,7 @@ const coachProfileSchema = mongoose.Schema({
         discord: String,        
             },
     about: String,
+    experience: [String],
     reviews: [{type:mongoose.Schema.Types.ObjectId, ref: 'reviews'}],
     rating: Number,
 });
