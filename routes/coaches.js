@@ -37,34 +37,17 @@ router.post('/profile', (req, res) => {
 router.get('/profile/:coach', (req, res) => {
     // Search the user ID via his username
     UserLogin.findOne({username: req.params.coach}) 
-    .then(user => {
+    .then(user => { 
         // Search coach ID via his user ID 
-        CoachProfile.findOne({user:user._id}).populate('user')
+        CoachProfile.findOne({user:user._id}).populate('user').populate('reviews') 
         .then (coach =>{
         console.log(coach)
         res.json({result:true, profile: coach})
         })
-    })
-});
-
-    router.delete('/profile/:coach', (req, res) => {
-        // Search user ID via username
-        UserLogin.deleteOne({username: req.params.coach}) 
-        .then(user => {
-        // Delete the coach profile by user ID
-        CoachProfile.deleteOne({user:user._id}).populate('user')
-         .then(deletedProfile => {
-            if (!deletedProfile) {
-             // Profile not found, send a 404 response
-            res.json({ result: false, message: 'Coach profile not found' });
-            } else {
-            // Profile was successfully deleted, send a success response
-            res.json({ result: true, message: 'Coach profile deleted successfully' });
-            }
-        })
-    });
+    }) 
 })
 
+// Create a PUT /profile route to update the coach informations
 router.put('/profile/:coach', (req, res) => {
     // Search the user ID via his username
     UserLogin.findOne({ username: req.params.coach })
@@ -105,5 +88,25 @@ router.put('/profile/:coach', (req, res) => {
                 })
             });
         });
+        
+// Create a DELETE /profile route to delete the coach informations
+    router.delete('/profile/:coach', (req, res) => {
+        // Search user ID via username
+        UserLogin.deleteOne({username: req.params.coach}) 
+        .then(user => { 
+        // Delete the coach profile by user ID
+        CoachProfile.deleteOne({user:user._id}).populate('user')
+         .then(deletedProfile => {
+            if (!deletedProfile) {
+             // Profile not found, send a 404 response
+            res.json({ result: false, message: 'Coach profile not found' });
+            } else {
+            // Profile was successfully deleted, send a success response
+            res.json({ result: true, message: 'Coach profile deleted successfully' });
+            }
+        })
+    });
+})
+
 
 module.exports = router;
