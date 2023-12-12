@@ -14,7 +14,7 @@ router.get('/:coach', (req, res) => {
         CoachProfile.findOne({user:user._id}).populate('user') //finds coach id via his user id 
         .then (coach =>{
            
-            Review.find({coach:coach._id}).populate('coach') //finds coach's reviews via his coach id
+            Review.find({coach:coach._id}).populate('coach').populate('username') //finds coach's reviews via his coach id
             .then(data =>{
                 if(data.length>0){    
                     res.json({result:true, reviews: data})
