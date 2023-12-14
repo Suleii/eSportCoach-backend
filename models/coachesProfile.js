@@ -10,8 +10,6 @@ const coachProfileSchema = mongoose.Schema({
     price: {
         oneSession: Number,
         tenSessions: Number,
-        oneGroupSession: Number,
-        tenGroupSessions: Number,
     },
     bookings: [{type:mongoose.Schema.Types.ObjectId, ref: 'bookings'}],
     socials: {

@@ -2,21 +2,28 @@ var express = require('express');
 var router = express.Router();
 const stripe = require('stripe')(process.env.STRIPE_SK_API);
 const CoachProfile = require("../models/coachesProfile");
+const UserLogin = require('../models/usersLogin');
 
 
 
 // Route pour créer une session de paiement
 router.post('/create-checkout-session', async (req, res) => {
-    const coachId = req.query.coachId; 
-    const sessionType = req.query.sessionType;  
+    const {username, sessionType} = req.body
 
-    const coach = await CoachProfile.findById(coachId).populate('user')
-        if (!coach) {
-            return res.status(404).json({ error: 'Coach not found' });
-        }
+    const user = await UserLogin.findOne({ username: username });
+    if (!user) {
+        return res.status(404).json({ error: 'User not found' });
+    }
 
-        const productName = `${coach.user.username} - ${sessionType}`;
+    // Trouver le profil du coach associé à l'utilisateur
+    const coach = await CoachProfile.findOne({ user: user._id }).populate('user');
+    if (!coach) {
+        return res.status(404).json({ error: 'Coach not found' });
+    }
+
+        const productName = `${user.username} - ${sessionType}`;
         const productPrice = coach.price[sessionType] * 100; // Le prix en centimes
+
 
         const session = await stripe.checkout.sessions.create({
             ui_mode: 'embedded',
