@@ -8,7 +8,7 @@ const uid2 = require('uid2');
 const bcrypt = require('bcrypt');
 
 router.post('/signup', (req, res) => {
-  if (!checkBody(req.body, ['firstname', 'username', 'password'])) {
+  if (!checkBody(req.body, ['lastname', 'firstname', 'email', 'username', 'password'])) {
     res.json({ result: false, error: 'Missing or empty fields' });
     return;
   }
@@ -19,7 +19,9 @@ router.post('/signup', (req, res) => {
       const hash = bcrypt.hashSync(req.body.password, 10);
 
       const newUser = new User({
+        lastname: req.body.lastname,
         firstname: req.body.firstname,
+        email: req.body.email,
         username: req.body.username,
         password: hash,
         isCoach: req.body.isCoach,
@@ -27,8 +29,11 @@ router.post('/signup', (req, res) => {
       });
 
       newUser.save().then(newDoc => {
-        res.json({ result: true, token: newDoc.token });
+        console.log(newDoc)
+        res.json({ result: true, lastname: newDoc.lastname, firstname: newDoc.firstname, email: newDoc.email, username: newDoc.username ,token: newDoc.token });
       });
+      
+    
     } else {
       // User already exists in database
       res.json({ result: false, error: 'User already exists' });
@@ -54,3 +59,6 @@ router.post('/signin', (req, res) => {
 
 
 module.exports = router;
+
+
+
