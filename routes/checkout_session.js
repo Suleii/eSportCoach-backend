@@ -7,31 +7,49 @@ const CoachProfile = require("../models/coachesProfile");
 
 // Route pour créer une session de paiement
 router.post('/create-checkout-session', async (req, res) => {
-    try {
+    const coachId = req.query.coachId; 
+    const sessionType = req.query.sessionType;  
+
+    const coach = await CoachProfile.findById(coachId).populate('user')
+        if (!coach) {
+            return res.status(404).json({ error: 'Coach not found' });
+        }
+
+        const productName = `${coach.user.username} - ${sessionType}`;
+        const productPrice = coach.price[sessionType] * 100; // Le prix en centimes
+
         const session = await stripe.checkout.sessions.create({
+            ui_mode: 'embedded',
             payment_method_types: ['card'],
             line_items: [
                 {
                     price_data: {
                         currency: 'eur',
                         product_data: {
-                            name: 'Nom du produit/service',
+                            name: productName
                         },
-                        unit_amount: 2000, // Le prix en centimes
+                        unit_amount: productPrice, // Le prix en centimes
                     },
                     quantity: 1,
                 },
             ],
             mode: 'payment',
-            success_url: `http://localhost:3001`,
-            cancel_url: `http://localhost:3001`,
+            return_url: `http://localhost:3001/paymentReturn?session_id={CHECKOUT_SESSION_ID}`
         });
 
-        res.status(200).json({ sessionId: session.id });
-    } catch (error) {
-        res.status(500).json({ error: error.message });
-    }
-});
+        res.send({clientSecret: session.client_secret, productName, productPrice});
+    });
+
+
+    router.get('/session-status', async (req, res) => {
+        const session = await stripe.checkout.sessions.retrieve(req.query.session_id);
+      
+        res.json({
+          status: session.status,
+          customer_email: session.customer_details.email
+        });
+      });
+
 
 // route pour traiter le paiement
 
@@ -62,6 +80,8 @@ router.post('/process_payment', async (req, res) => {
         })
     }
 });
+
+
 
 module.exports = router;
 
