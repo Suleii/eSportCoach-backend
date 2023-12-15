@@ -11,6 +11,6 @@ const userProfileSchema = mongoose.Schema({
     reviews: [{type:mongoose.Schema.Types.ObjectId, ref: 'reviews'}],
 });
 
-const UserProfile = mongoose.model('usersprofiles', userProfileSchema);
+const UserProfile = mongoose.model('usersprofile', userProfileSchema);
 
-module.exports = UserProfile;
+module.exports = UserProfile; 
