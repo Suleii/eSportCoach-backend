@@ -21,7 +21,7 @@ router.post('/create-checkout-session', async (req, res) => {
         return res.status(404).json({ error: 'Coach not found' });
     }
 
-        const productName = `${user.username}`;
+        const productName = `${user.username} - 1 session`;
         const productPrice = coach.price * 100; // Le prix en centimes
 
 

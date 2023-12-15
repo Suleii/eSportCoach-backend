@@ -5,11 +5,10 @@ const Unavailability = require('../models/unavailabilities')
 
 router.post('/', (req, res) => {
   const newUnavailability = new Unavailability ({
+    date: req.body.date,
+    coach: req.body.coach,
     game: req.body.game,
     username: req.body.username,
-    coachUsername: req.body.coachUsername,
-    startDate: req.body.startDate,
-    endDate: req.body.endDate,
   })
   newUnavailability.save()
   .then(data => {
@@ -19,11 +18,10 @@ router.post('/', (req, res) => {
 
 router.delete('/', (req, res) => {
     Unavailability.deleteOne( 
-      {game: req.body.game, 
-      username: req.body.username,
-      coachUsername: req.body.coachUsername,
-      startDate: req.body.startDate,
-      endDate: req.body.endDate})
+      { date: Date,
+        username: String,
+        coach: String,
+        game: String,})
       .then(data => {
         if (!data) {
           res.json({result: false, message: 'no unavailability found'})

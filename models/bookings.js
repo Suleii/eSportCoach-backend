@@ -1,11 +1,10 @@
 const mongoose = require('mongoose');
 
 const bookingSchema = mongoose.Schema({
-    game: String,
+    date: Date,
     username: {type:mongoose.Schema.Types.ObjectId, ref: 'usersprofile'},
-    coachUsername: {type:mongoose.Schema.Types.ObjectId, ref: 'coachesprofile'},
-    startDate: Date,
-    endDate: Date, 
+    coach: {type:mongoose.Schema.Types.ObjectId, ref: 'coachesprofile'},
+    game: String,
 });
 
 const Booking = mongoose.model('bookings', bookingSchema);
