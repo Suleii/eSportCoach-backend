@@ -4,8 +4,7 @@ const bookingSchema = mongoose.Schema({
     game: String,
     username: {type:mongoose.Schema.Types.ObjectId, ref: 'usersprofile'},
     coachUsername: {type:mongoose.Schema.Types.ObjectId, ref: 'coachesprofile'},
-    startDate: Date,
-    endDate: Date, 
+    date: Date, 
 });
 
 const Booking = mongoose.model('bookings', bookingSchema);
