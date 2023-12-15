@@ -4,11 +4,6 @@ const userLoginSchema = mongoose.Schema({
 	username: String,
     password: String,
     token: String,
-    email: String,
-    lastname: String,
-    firstname: String,
-    // canBook: Boolean,
-    // canEdit: Boolean,
     isCoach: Boolean,
     
 });

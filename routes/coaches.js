@@ -4,34 +4,6 @@ const CoachProfile = require('../models/coachesProfile');
 const UserLogin = require('../models/usersLogin');
 
 
-// Create a POST /profile route to add a new document to the coach profile collection
-router.post('/profile', (req, res) => {
-
-    // Create a new instance of the coachProfile model
-    const newCoachProfile = new CoachProfile({
-        lastname: req.body.lastname,
-        firstname: req.body.firstname,
-        email: req.body.email,
-        photo: req.body.photo,
-        user: req.body.user,
-        games: req.body.games,
-        bookings: req.body.bookings,
-        socials: {
-            twitch: req.body.twitch,
-            instagram: req.body.instagram,
-            youtube: req.body.youtube,
-            discord: req.body.discord,
-        },
-        about: req.body.about,
-        reviews: req.body.reviews,
-    });
-
-    // Save the new profile in the database 
-    newCoachProfile.save()
-    .then(data => {
-        res.json(data)
-    })
-});
   
 // Create a GET /profile route to collect the coach informations via his username
 router.get('/profile/:coach', (req, res) => {
@@ -39,7 +11,7 @@ router.get('/profile/:coach', (req, res) => {
     UserLogin.findOne({username: req.params.coach}) 
     .then(user => { 
         // Search coach ID via his user ID 
-        CoachProfile.findOne({user:user._id}).populate('user').populate('reviews') 
+        CoachProfile.findOne({user:user._id}).populate('user') 
         .then (coach =>{
         console.log(coach)
         res.json({result:true, profile: coach})

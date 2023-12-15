@@ -2,6 +2,10 @@ var express = require('express');
 var router = express.Router();
 
 const Booking = require('../models/bookings')
+const UserLogin = require('../models/usersLogin')
+const CoachProfile = require('../models/coachesProfile')
+
+
 
 router.post('/', (req, res) => {
   const newBooking = new Booking ({
@@ -33,16 +37,21 @@ Booking.deleteOne(
   })  
 })
 
-router.get('/:coach', (req, res) => {
-  UserLogin.findOne({username: req.params.coach}) 
+router.get('/:token', (req, res) => {
+  UserLogin.findOne({token: req.params.token}) 
   .then(user => {
+    CoachProfile.findOne({user:user._id})
+    .then(user => {
       Booking.find({coachUsername:user._id}).populate('username').populate('coachUsername')
       .then(data => {
+        console.log(data)
           if(!data){
               res.json({bookings : []})
-          }else{
+          }else{ 
               res.json({bookings : data})
           }
+    })
+      
       })
   })
 })
