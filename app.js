@@ -14,6 +14,7 @@ var coachesRouter = require('./routes/coaches');
 var reviewsRouter = require('./routes/reviews');
 var searchRouter = require('./routes/search');
 var checkoutRouter = require('./routes/checkout_session')
+var unavailabilitiesRouter = require('./routes/unavailabilities')
 
 var app = express();
 const cors = require ('cors');
@@ -32,6 +33,7 @@ app.use('/bookings', bookingsRouter);
 app.use('/coaches', coachesRouter);
 app.use('/reviews', reviewsRouter);
 app.use('/search', searchRouter);
-app.use('/checkout_session', checkoutRouter);;
+app.use('/checkout_session', checkoutRouter);
+app.use('/unavailabilities', unavailabilitiesRouter);
 
 module.exports = app;

@@ -3,7 +3,7 @@ const mongoose = require('mongoose');
 const bookingSchema = mongoose.Schema({
     date: Date,
     username: {type:mongoose.Schema.Types.ObjectId, ref: 'usersprofile'},
-    coach: {type:mongoose.Schema.Types.ObjectId, ref: 'coachesprofile'},
+    coachUsername: {type:mongoose.Schema.Types.ObjectId, ref: 'coachesprofile'},
     game: String,
 });
 

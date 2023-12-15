@@ -6,7 +6,7 @@ const Unavailability = require('../models/unavailabilities')
 router.post('/', (req, res) => {
   const newUnavailability = new Unavailability ({
     date: req.body.date,
-    coach: req.body.coach,
+    coachUsername: req.body.coachUsername,
     game: req.body.game,
     username: req.body.username,
   })

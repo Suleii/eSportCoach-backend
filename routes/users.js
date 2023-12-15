@@ -18,82 +18,88 @@ router.post('/signup/gamer', (req, res) => {
   }
 
   // Check if the user has not already been registered
-  UserLogin.findOne({ username: req.body.username })
-  .then(data => {
-    if (data === null) {
-      UserProfile.findOne({email: req.body.email})
-        .then(data => {
-          if(data ===null) {
-            const newUserProfile = new UserProfile ({
-              lastname: req.body.lastname,
-              firstname: req.body.firstname,
-              email: req.body.email,
+    UserLogin.findOne({ username: req.body.username })
+      .then(existingUser => {
+        if (existingUser) {
+          return res.json({ result: false, error: 'This username is already used' });
+        }
+  
+        UserProfile.findOne({ email: req.body.email })
+          .then(existingEmail => {
+            if (existingEmail) {
+              return res.json({ result: false, error: 'This email is already used' });
+            }
+  
+            const hash = bcrypt.hashSync(req.body.password, 10);
+            const newUserLogin = new UserLogin({
+              username: req.body.username,
+              password: hash,
+              token: uid2(32),
+              isCoach: false
             });
-            newUserProfile.save()
-          }else {
-            res.json({result:false , error : "This email has already been used"})
-          }
-        })
-          
-      const hash = bcrypt.hashSync(req.body.password, 10);
-      const newUserLogin = new UserLogin ({
-          username: req.body.username,
-          password: hash,
-          token: uid2(32),
-          isCoach : false,
-            });
-          newUserLogin.save()
-      .then(newDoc => {
-        res.json({ result: true, username: newDoc.username ,token: newDoc.token, isCoach: false })
+  
+            newUserLogin.save()
+              .then(savedUser => {
+                const newUserProfile = new UserProfile({
+                  lastname: req.body.lastname,
+                  firstname: req.body.firstname,
+                  email: req.body.email,
+                  user: savedUser._id
+                });
+  
+                newUserProfile.save()
+                  .then(() => {
+                    res.json({ result: true, username: savedUser.username, token: savedUser.token, isCoach: savedUser.isCoach });
+                  });
+              });
+          });
       })
-        }else {
-      // User already exists in database
-      res.json({ result: false, error: 'This username already exists' });
-           }
-})
-})
-
-router.post('/signup/coach', (req, res) => {
-  if (!checkBody(req.body, ['lastname', 'firstname', 'email', 'username', 'password'])) {
-    res.json({ result: false, error: 'Missing or empty fields' });
-    return;
-  }
+      .catch(error => res.json({ result: false, error }));
+  });
+  
 
   // Check if the user has not already been registered
-  UserLogin.findOne({ username: req.body.username })
-  .then(data => {
-    if (data === null) {
-      CoachProfile.findOne({email: req.body.email})
-        .then(data => {
-          if(data ===null) {
-            const newCoachProfile = new CoachProfile ({
-              lastname: req.body.lastname,
-              firstname: req.body.firstname,
-              email: req.body.email,
+  router.post('/signup/coach', (req, res) => {
+    UserLogin.findOne({ username: req.body.username })
+      .then(existingUser => {
+        if (existingUser) {
+          return res.json({ result: false, error: 'This username is already used' });
+        }
+  
+        CoachProfile.findOne({ email: req.body.email })
+          .then(existingEmail => {
+            if (existingEmail) {
+              return res.json({ result: false, error: 'This email is already used' });
+            }
+  
+            const hash = bcrypt.hashSync(req.body.password, 10);
+            const newUserLogin = new UserLogin({
+              username: req.body.username,
+              password: hash,
+              token: uid2(32),
+              isCoach: true
             });
-            newCoachProfile.save()
-          }else {
-            res.json({result:false , error : "This email has already been used"})
-          }
-        })
-          
-      const hash = bcrypt.hashSync(req.body.password, 10);
-      const newUserLogin = new UserLogin ({
-          username: req.body.username,
-          password: hash,
-          token: uid2(32),
-          isCoach : true,
-            });
-          newUserLogin.save()
-      .then(newDoc => {
-        res.json({ result: true, username: newDoc.username ,token: newDoc.token, isCoach: true })
+  
+            newUserLogin.save()
+              .then(savedUser => {
+                const newCoachProfile = new CoachProfile({
+                  lastname: req.body.lastname,
+                  firstname: req.body.firstname,
+                  email: req.body.email,
+                  user: savedUser._id
+                });
+  
+                newCoachProfile.save()
+                  .then(() => {
+                    res.json({ result: true, username: savedUser.username, token: savedUser.token, isCoach: savedUser.isCoach });
+                  });
+              });
+          });
       })
-        }else {
-      // User already exists in database
-      res.json({ result: false, error: 'This username already exists' });
-           }
-})
-})
+      .catch(error => res.json({ result: false, error }));
+  });
+  
+  
   
 
 

@@ -2,8 +2,8 @@ const mongoose = require('mongoose');
 
 const unavailabilitySchema = mongoose.Schema({
     date: Date,
-    username: String,
-    coach: String,
+    username: {type:mongoose.Schema.Types.ObjectId, ref: 'usersprofile'},
+    coachUsername: {type:mongoose.Schema.Types.ObjectId, ref: 'coachesprofile'},
     game: String,
 });
 
