@@ -55,13 +55,13 @@ router.get('/:token', (req, res) => {
   .then(user => {
     CoachProfile.findOne({user:user._id})
     .then(user => {
-      Booking.find({coachUsername:user._id}).populate('username').populate('coachUsername')
+      Booking.find({coachUsername:user._id}).populate({path:'username', populate:{path:'user'}}).populate('coachUsername')
       .then(data => {
         console.log(data)
           if(!data){
-              res.json({bookings : []})
+              res.json({result: false , bookings : data})
           }else{ 
-              res.json({bookings : data})
+              res.json({result: true, bookings : data})
           }
     })
       
