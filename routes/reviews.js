@@ -19,7 +19,7 @@ router.get('/:coach', (req, res) => {
                 if(data.length>0){    
                     res.json({result:true, reviews: data})
                 } else {
-                    res.json({result:false, reviews: "No review for this coach yet"})
+                    res.json({result:false, reviews: data})
                 }
             })   
         })

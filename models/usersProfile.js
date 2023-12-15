@@ -6,9 +6,8 @@ const userProfileSchema = mongoose.Schema({
     email: String,
     photo: String,
     user: {type:mongoose.Schema.Types.ObjectId, ref: 'userslogins'},
-    coaches: [{type:mongoose.Schema.Types.ObjectId, ref: 'bookings'}],
-    bookings: [{type:mongoose.Schema.Types.ObjectId, ref: 'bookings'}],
-    reviews: [{type:mongoose.Schema.Types.ObjectId, ref: 'reviews'}],
+    coaches: [String],
+    
 });
 
 const UserProfile = mongoose.model('usersprofile', userProfileSchema);
