@@ -7,10 +7,7 @@ const coachProfileSchema = mongoose.Schema({
     photo: String,
     user: {type:mongoose.Schema.Types.ObjectId, ref: 'userslogins'},
     games: [String],
-    price: {
-        oneSession: Number,
-        tenSessions: Number,
-    },
+    price: Number,
     bookings: [{type:mongoose.Schema.Types.ObjectId, ref: 'bookings'}],
     socials: {
         twitch: String,

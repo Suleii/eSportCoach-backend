@@ -8,9 +8,9 @@ const UserLogin = require('../models/usersLogin');
 
 // Route pour créer une session de paiement
 router.post('/create-checkout-session', async (req, res) => {
-    const {username, sessionType} = req.body
+    const {coachName} = req.body
 
-    const user = await UserLogin.findOne({ username: username });
+    const user = await UserLogin.findOne({ username: coachName });
     if (!user) {
         return res.status(404).json({ error: 'User not found' });
     }
@@ -21,8 +21,8 @@ router.post('/create-checkout-session', async (req, res) => {
         return res.status(404).json({ error: 'Coach not found' });
     }
 
-        const productName = `${user.username} - ${sessionType}`;
-        const productPrice = coach.price[sessionType] * 100; // Le prix en centimes
+        const productName = `${user.username}`;
+        const productPrice = coach.price * 100; // Le prix en centimes
 
 
         const session = await stripe.checkout.sessions.create({
