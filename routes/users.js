@@ -60,6 +60,11 @@ router.post('/signup/gamer', (req, res) => {
 
   // Check if the user has not already been registered
   router.post('/signup/coach', (req, res) => {
+    if (!checkBody(req.body, ['lastname', 'firstname', 'email', 'username', 'password'])) {
+      res.json({ result: false, error: 'Missing or empty fields' });
+      return;
+    }
+    
     UserLogin.findOne({ username: req.body.username })
       .then(existingUser => {
         if (existingUser) {
