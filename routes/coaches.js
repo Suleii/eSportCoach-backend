@@ -80,5 +80,14 @@ router.put('/profile/:coach', (req, res) => {
     });
 })
 
+//Get all available games from all coaches
+router.get('/games', (req,res) => {
+    CoachProfile.find()
+    .then(coaches =>{
+        let availableGames = []
+        coaches.map((coach) => availableGames=[...new Set(coach.games)])
+        res.json({result:true, availableGames})
+    })
+})
 
 module.exports = router;
