@@ -6,7 +6,6 @@ const userProfileSchema = mongoose.Schema({
     email: String,
     photo: String,
     user: {type:mongoose.Schema.Types.ObjectId, ref: 'userslogins'},
-    coaches: [String],
     
 });
 

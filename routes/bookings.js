@@ -41,9 +41,9 @@ router.delete('/', (req, res) => {
           })
       
 
-// Get all the bookings of a coach with his token 
-router.get('/:token', (req, res) => {
-  UserLogin.findOne({token: req.params.token}) 
+// Get all the bookings of a coach with his username 
+router.get('/:coach', (req, res) => {
+  UserLogin.findOne({username: req.params.coach}) 
   .then(user => {
     CoachProfile.findOne({user:user._id})
     .then(user => {
@@ -61,19 +61,19 @@ router.get('/:token', (req, res) => {
   })
 })
 
-//Get all the bookings of a gamer with his token
-router.get('/gamer/:token', (req, res) => {
-  UserLogin.findOne({token: req.params.token}) 
+//Get all the bookings of a gamer with his username
+router.get('/gamer/:gamer', (req, res) => {
+  UserLogin.findOne({username: req.params.gamer}) 
   .then(user => {
     UserProfile.findOne({user:user._id})
     .then(user => {
       Booking.find({username:user._id}).populate({path:'coachUsername', populate:{path:'user'}}).populate('username')
       .then(data => {
         console.log(data)
-          if(!data){
-              res.json({result: false , bookings : "pas de bookings"})
+          if(data){
+              res.json({result: true , bookings : data})
           }else{ 
-              res.json({result: true, bookings : data})
+              res.json({result: false, bookings : "Pas de bookings"})
           }
     })
       
