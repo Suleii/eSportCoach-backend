@@ -15,6 +15,7 @@ var reviewsRouter = require('./routes/reviews');
 var searchRouter = require('./routes/search');
 var checkoutRouter = require('./routes/checkout_session')
 var unavailabilitiesRouter = require('./routes/unavailabilities')
+var gamersRouter = require('./routes/gamers');
 
 var app = express();
 const cors = require ('cors');
@@ -35,5 +36,6 @@ app.use('/reviews', reviewsRouter);
 app.use('/search', searchRouter);
 app.use('/checkout_session', checkoutRouter);
 app.use('/unavailabilities', unavailabilitiesRouter);
+app.use('/gamers', gamersRouter);
 
 module.exports = app;
