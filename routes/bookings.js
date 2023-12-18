@@ -62,7 +62,7 @@ router.get('/:token', (req, res) => {
 })
 
 //Get all the bookings of a gamer with his token
-router.get('/:token', (req, res) => {
+router.get('/gamer/:token', (req, res) => {
   UserLogin.findOne({token: req.params.token}) 
   .then(user => {
     UserProfile.findOne({user:user._id})
@@ -71,7 +71,7 @@ router.get('/:token', (req, res) => {
       .then(data => {
         console.log(data)
           if(!data){
-              res.json({result: false , bookings : data})
+              res.json({result: false , bookings : "pas de bookings"})
           }else{ 
               res.json({result: true, bookings : data})
           }
