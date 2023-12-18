@@ -24,8 +24,8 @@ router.post('/', (req, res) => {
 router.delete('/', (req, res) => {
   Booking.deleteOne( 
             { _id:req.body._id,})
-            .then(data => {
-              if (!data) {
+            .then((data) => {
+              if (data.deletedCount ===0) {
                 res.json({result: false, message: 'no booking found'})
               } else {
                 res.json({result: true, message:'booking succesfully deleted'})

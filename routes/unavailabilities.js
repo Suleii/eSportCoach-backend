@@ -2,6 +2,9 @@ var express = require('express');
 var router = express.Router();
 
 const Unavailability = require('../models/unavailabilities')
+const UserLogin = require ('../models/usersLogin')
+const CoachProfile = require('../models/coachesProfile'); 
+
 
 router.post('/', (req, res) => {
   const newUnavailability = new Unavailability ({
@@ -18,15 +21,18 @@ router.post('/', (req, res) => {
 
 router.delete('/', (req, res) => {
     Unavailability.deleteOne( 
-      { date: Date,
-        username: String,
-        coach: String,
-        game: String,})
-      .then(data => {
-        if (!data) {
+      { date: req.body.date,
+        coachUsername: req.body.coachUsername,
+        //game: req.body.game,
+        //username: req.body.username,
+      })
+      .then((data) => {
+        if (data.deletedCount ===0) {
           res.json({result: false, message: 'no unavailability found'})
+          console.log("pas de suppression")
         } else {
-          res.json({result: true, message:'Unavailability succesfully deleted'})
+          res.json({result: true, message:'Unavailability successfully deleted'})
+          console.log("suppression")
         }
       })  
     })
@@ -34,13 +40,17 @@ router.delete('/', (req, res) => {
 router.get('/:coach', (req, res) => {
     UserLogin.findOne({username: req.params.coach}) 
     .then(user => {
-        Unavailability.find({coachUsername:user._id}).populate('username').populate('coachUsername')
+      CoachProfile.findOne({user:user._id})
+      .then(coach => {
+        Unavailability.find({coachUsername:coach._id}).populate('username').populate('coachUsername')
         .then(data => {
             if(!data){
                 res.json({unavailabilities : []})
             }else{
                 res.json({unavailabilities : data})
             }
+      })
+        
         })
     })
 })
