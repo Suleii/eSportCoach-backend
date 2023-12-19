@@ -16,6 +16,8 @@ var searchRouter = require('./routes/search');
 var checkoutRouter = require('./routes/checkout_session')
 var unavailabilitiesRouter = require('./routes/unavailabilities')
 var gamersRouter = require('./routes/gamers');
+var emailsRouter = require('./routes/emails');
+
 
 var app = express();
 const cors = require ('cors');
@@ -37,5 +39,7 @@ app.use('/search', searchRouter);
 app.use('/checkout_session', checkoutRouter);
 app.use('/unavailabilities', unavailabilitiesRouter);
 app.use('/gamers', gamersRouter);
+app.use('/emails', emailsRouter);
+
 
 module.exports = app;
