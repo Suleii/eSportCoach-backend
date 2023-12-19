@@ -36,16 +36,15 @@ router.put("/profile/:coach", (req, res) => {
           email: req.body.email,
           photo: req.body.photo,
           games: req.body.games,
-          socials: {
-            twitch: req.body.twitch,
-            instagram: req.body.instagram,
-            youtube: req.body.youtube,
-            discord: req.body.discord,
-          },
+          "socials.twitch": req.body.twitch,
+          "socials.instagram": req.body.instagram,
+          "socials.youtube": req.body.youtube,
+          "socials.discord": req.body.discord,
           about: req.body.about,
           experience: req.body.experience,
           language: req.body.language,
         },
+        
       },
       { new: true }
     )
