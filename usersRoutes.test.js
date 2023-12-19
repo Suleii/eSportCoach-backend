@@ -8,26 +8,29 @@ const connectionString = process.env.CONNECTION_STRING;
 
 const newUserGamer = {
   lastname: "Gamer",
-  firstname: "La Capsule",
-  email: "test@capsule.com",
-  username: "test-lacapsule",
+  firstname: "La Capsule TDD TEST",
+  email: "test@capsuleTDDCOACH.com",
+  username: "test-lacapsuleGamer",
   password: "test123",
+  photo: "testphoto1",
   token: "faketoken",
 };
 
 const newUserCoach = {
   lastname: "Coach",
-  firstname: "La Capsule",
-  email: "test@capsule.com",
-  username: "test-lacapsule",
+  firstname: "La Capsule TDD TEST",
+  email: "test@capsuleTDDCOACH.com",
+  username: "test-lacapsuleCoach",
   password: "test123",
-  token: "faketoken",
+  photo: "testphoto2",
+  token: "faketoken2",
 };
 
 beforeAll(async () => {
   await mongoose.connect(connectionString);
 });
 
+// TDD FOR USER SCHEMA AND MODEL
 it("Users schema & model", () => {
   expect(UserLogin).toBeDefined();
 
@@ -40,6 +43,7 @@ it("Users schema & model", () => {
   expect(newFakeUser).toHaveProperty("isCoach", newUserGamer.isCoach);
 });
 
+// TDD FOR GAMER SIGN UP AND SIGN IN
 it("POST /users/signup/gamer", async () => {
   const res = await request(app).post("/users/signup/gamer").send(newUserGamer);
 
@@ -66,6 +70,7 @@ it("POST /users/signin for gamer", async () => {
   expect(res.body.token.length).toBe(32);
 });
 
+// TDD FOR COACH SIGN UP AND SIGN IN
 it("POST /users/signup/coach", async () => {
   const res = await request(app).post("/users/signup/coach").send(newUserCoach);
 
@@ -83,8 +88,8 @@ it("POST /users/signin for coach", async () => {
   expect(res.body.token.length).toBe(32);
 
   const res2 = await request(app).post("/users/signin").send({
-    username: newUser.username,
-    password: newUser.password,
+    username: newUserCoach.username,
+    password: newUserCoach.password,
   });
   expect(res2.statusCode).toBe(200);
   expect(res2.body.result).toBe(true);
