@@ -47,7 +47,7 @@ router.post('/signup', (req, res) =>{
         from: 'experience.lacapsule@gmail.com',
         to: req.body.email,
         subject: "Welcome to Experience",
-        html: `Thank you for signing up ${req.body.name}! You can now enjoy our coaching services.`,
+        html: `Thank you for signing up ${req.body.name}! You can now enjoy our services.`,
         
     };
 

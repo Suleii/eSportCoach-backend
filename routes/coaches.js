@@ -43,6 +43,7 @@ router.put("/profile/:coach", (req, res) => {
             discord: req.body.discord,
           },
           about: req.body.about,
+          experience: req.body.experience,
           language: req.body.language,
         },
       },
