@@ -82,4 +82,33 @@ router.get('/coachRating/:username', (req, res) => {
 
 });
 
+router.post('/', (req,res) =>{
+UserLogin.findOne({username: req.body.username})
+  .then(user => {
+    UserProfile.findOne({user:user._id})
+    .then(userProfile=>{
+        UserLogin.findOne({username: req.body.coachUsername})
+        .then(coach => {
+            CoachProfile.findOne({user:coach._id})
+            .then(coachProfile =>{
+        const newReview = new Review ({
+            game : req.body.game,
+            username : userProfile._id,
+            coach: coachProfile._id,
+            content: req.body.content,
+            rating: req.body.rating,
+            })
+            newReview.save()
+            .then(data => {
+                res.json({result : true, message : "Thanks for your review!"})
+            })
+      
+        })
+  
+      })
+    })
+  })  
+});
+
+
 module.exports = router
