@@ -5,6 +5,7 @@ require("../models/connection");
 const UserLogin = require("../models/usersLogin");
 const UserProfile = require("../models/usersProfile");
 const CoachProfile = require("../models/coachesProfile");
+const Token = require("../models/resetToken")
 
 const { checkBody } = require("../modules/checkBody");
 const uid2 = require("uid2");
@@ -185,6 +186,25 @@ router.post("/signin", (req, res) => {
       res.json({ result: false, error: "User not found or wrong password" });
     }
   });
+});
+
+router.put('/updatepassword', async (req, res) => {
+  try {
+    const user = await UserLogin.findOne({ username: req.body.username });
+    const token = await Token.findOne({ userId: user._id });
+
+    //Compare plain token from link to crypted token in DB before allowing password to be updated
+    if (bcrypt.compareSync(req.body.token, token.token)) {
+      const hash = bcrypt.hashSync(req.body.newpassword, 10);
+      await UserLogin.updateOne({ username: req.body.username }, { $set: { password: hash } });
+      res.json({ message: "Password updated" });
+    } else {
+      res.json({ message: "Token invalid or expired" });
+    }
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Internal server error" });
+  }
 });
 
 module.exports = router;
