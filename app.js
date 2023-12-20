@@ -7,6 +7,7 @@ var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 
+
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
 var bookingsRouter = require('./routes/bookings');
@@ -20,9 +21,11 @@ var emailsRouter = require('./routes/emails');
 
 
 var app = express();
-const cors = require ('cors');
 
+const cors = require ('cors');
+const fileUpload = require('express-fileupload');
 app.use(cors());
+app.use(fileUpload());
 app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));

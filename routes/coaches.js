@@ -1,5 +1,8 @@
 var express = require("express");
 var router = express.Router();
+const uniqid = require('uniqid');
+const cloudinary = require('cloudinary').v2;
+const fs = require('fs');
 const CoachProfile = require("../models/coachesProfile");
 const UserLogin = require("../models/usersLogin");
 
@@ -17,10 +20,11 @@ router.get("/profile/:coach", (req, res) => {
   });
 });
 
-// Create a PUT /profile route to update the coach informations
+//Create a PUT /profile route to update the coach informations
 router.put("/profile/:coach", (req, res) => {
   // Search the user ID via his username
-  UserLogin.findOne({ username: req.params.coach }).then((user) => {
+  UserLogin.findOne({ username: req.params.coach })
+  .then((user) => {
     if (!user) {
       res.json({ result: false, message: "User not found" });
       return;
@@ -35,14 +39,14 @@ router.put("/profile/:coach", (req, res) => {
           firstname: req.body.firstname,
           email: req.body.email,
           photo: req.body.photo,
-          games: req.body.games,
-          socials: {
-            twitch: req.body.twitch,
-            instagram: req.body.instagram,
-            youtube: req.body.youtube,
-            discord: req.body.discord,
-          },
           about: req.body.about,
+          'socials.twitch': req.body.twitch,
+          'socials.instagram': req.body.instagram,
+          'socials.youtube': req.body.youtube,
+          'socials.discord': req.body.discord,
+        },
+        $push: {
+          games: req.body.games,
           experience: req.body.experience,
           language: req.body.language,
         },
@@ -61,6 +65,52 @@ router.put("/profile/:coach", (req, res) => {
       });
   });
 });
+
+
+
+router.put("/profile/:coach/photo", async (req, res) => {
+ console.log(req.files.photoFromFront)
+  try {
+    // Search the user ID via his username
+    const user = await UserLogin.findOne({ username: req.params.coach });
+
+    if (!user) {
+      res.json({ result: false, message: "User not found" });
+      return;
+    }
+    const photoPath = `./tmp/${uniqid()}.png`;
+    const photo = await req.files.photoFromFront.mv(photoPath)
+   //const photo = await req.files.photo.mv(photoPath) 
+    console.log('Received photo:', photo);
+
+    // Upload the photo to Cloudinary
+    const cloudinaryResponse = await cloudinary.uploader.upload(photoPath);
+    fs.unlinkSync(photoPath);
+    console.log('Cloudinary response:', cloudinaryResponse);
+
+    
+    //Update the coach profile with the Cloudinary photo URL
+    const updatedProfile = await CoachProfile.updateOne(
+      { user: user._id },
+      {
+        $set: {photo: cloudinaryResponse.secure_url,}
+      },
+      { new: true }
+    ).populate("user");
+
+    if (!updatedProfile) {
+    
+      return res.json({ result: false, message: "Coach profile not found" });
+    }
+
+    //Profile was successfully updated, send the updated profile
+    res.json({ result: true, profile: updatedProfile });
+  } catch (error) {
+    console.error('Error uploading photo:', error);
+    res.status(500).json({ result: false, message: "Internal server error", error: error.message });
+  }
+});
+
 
 // Create a DELETE /profile route to delete the coach informations
 router.delete("/profile/:coach", (req, res) => {
