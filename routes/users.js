@@ -193,10 +193,15 @@ router.put('/updatepassword', async (req, res) => {
     const user = await UserLogin.findOne({ username: req.body.username });
     const token = await Token.findOne({ userId: user._id });
 
-    //Compare plain token from link to crypted token in DB before allowing password to be updated
+    //Compare plain token from link to crypted token in DB 
     if (bcrypt.compareSync(req.body.token, token.token)) {
       const hash = bcrypt.hashSync(req.body.newpassword, 10);
+      //update password in db
       await UserLogin.updateOne({ username: req.body.username }, { $set: { password: hash } });
+
+      //delete token from database after use
+      await Token.deleteOne({ userId: user._id });
+
       res.json({ message: "Password updated" });
     } else {
       res.json({ message: "Token invalid or expired" });
