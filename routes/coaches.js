@@ -47,6 +47,11 @@ router.put("/profile/:coach", (req, res) => {
         },
         $push: {
           games: req.body.games,
+          "socials.twitch": req.body.twitch,
+          "socials.instagram": req.body.instagram,
+          "socials.youtube": req.body.youtube,
+          "socials.discord": req.body.discord,
+          about: req.body.about,
           experience: req.body.experience,
           language: req.body.language,
         },
@@ -162,6 +167,27 @@ router.get("/languages", (req, res) => {
     }
     res.json({ result: true, availableLanguages });
   });
+});
+
+//Get all available coaches with a rating > 4
+router.get("/bestCoaches", (req, res) => {
+  CoachProfile.find()
+    .populate("user")
+    .then((coaches) => {
+      const bestCoaches = coaches.filter((coach) => coach.rating >= 4);
+
+      if (bestCoaches.length > 0) {
+        res.json({ result: true, coaches: bestCoaches });
+      } else {
+        res.json({
+          result: false,
+          message: "No coaches found with rating above 4",
+        });
+      }
+    })
+    .catch((error) => {
+      console.error("Error", error);
+    });
 });
 
 module.exports = router;

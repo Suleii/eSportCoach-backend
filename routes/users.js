@@ -5,6 +5,7 @@ require("../models/connection");
 const UserLogin = require("../models/usersLogin");
 const UserProfile = require("../models/usersProfile");
 const CoachProfile = require("../models/coachesProfile");
+const Token = require("../models/resetToken")
 
 const { checkBody } = require("../modules/checkBody");
 const uid2 = require("uid2");
@@ -167,6 +168,7 @@ router.post("/signup/coach", (req, res) => {
     .catch((error) => res.json({ result: false, error }));
 });
 
+//SIGN IN
 router.post("/signin", (req, res) => {
   if (!checkBody(req.body, ["username", "password"])) {
     res.json({ result: false, error: "Missing or empty fields" });
@@ -186,5 +188,37 @@ router.post("/signin", (req, res) => {
     }
   });
 });
+
+// UPDATE PASSWORD 
+router.put('/updatepassword', async (req, res) => {
+  try {
+    const user = await UserLogin.findOne({ username: req.body.username });
+    const token = await Token.findOne({ userId: user._id });
+
+    //Compare plain token from link to crypted token in DB 
+    if (bcrypt.compareSync(req.body.token, token.token)) {
+      const hash = bcrypt.hashSync(req.body.newpassword, 10);
+      //update password in db
+      await UserLogin.updateOne({ username: req.body.username }, { $set: { password: hash } });
+
+      //delete token from database after use
+      await Token.deleteOne({ userId: user._id });
+
+      res.json({ message: "Password updated" });
+    } else {
+      res.json({ message: "Token invalid or expired" });
+    }
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Internal server error" });
+  }
+});
+
+router.get('/credentials/:username', (req,res) =>{
+  UserLogin.findOne({ username: req.params.username })
+  .then(user => {
+    res.json({credentials : user})
+  })
+})
 
 module.exports = router;
