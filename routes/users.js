@@ -168,6 +168,7 @@ router.post("/signup/coach", (req, res) => {
     .catch((error) => res.json({ result: false, error }));
 });
 
+//SIGN IN
 router.post("/signin", (req, res) => {
   if (!checkBody(req.body, ["username", "password"])) {
     res.json({ result: false, error: "Missing or empty fields" });
@@ -188,6 +189,7 @@ router.post("/signin", (req, res) => {
   });
 });
 
+// UPDATE PASSWORD 
 router.put('/updatepassword', async (req, res) => {
   try {
     const user = await UserLogin.findOne({ username: req.body.username });
@@ -211,5 +213,12 @@ router.put('/updatepassword', async (req, res) => {
     res.status(500).json({ error: "Internal server error" });
   }
 });
+
+router.get('/credentials/:username', (req,res) =>{
+  UserLogin.findOne({ username: req.params.username })
+  .then(user => {
+    res.json({credentials : user})
+  })
+})
 
 module.exports = router;
