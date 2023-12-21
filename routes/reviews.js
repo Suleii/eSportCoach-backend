@@ -52,35 +52,27 @@ router.get('/gamer/:gamer', (req, res) => {
 
 
 // Coach rating update
-router.get('/coachRating/:username', (req, res) => {
+router.put('/coachRating/:coachUsername', (req, res) => {
 
         // Find user by username
-        const user =  UserLogin.findOne({ username: req.params.username });
-        if (!user) {
-            return res.json({ message: "User not found" });
-        }
-
-        // Match coach profil according to username
-        const coach =  CoachProfile.findOne({ user: user._id });
-        if (!coach) {
-            return res.json({ message: "Coach not found" });
-        }
-
-        // Rating average
-        const reviews =  Review.find({ username: user._id });
-        if (reviews.length === 0) {
-            return res.json({ rating: "No ratings yet" });
-        }
-
-        const averageRating = reviews.reduce((acc, review) => acc + review.rating, 0) / reviews.length;
-
-        // Update rating on coachProfile
-        coach.rating = averageRating;
-         coach.save();
-
-        res.json({ averageRating });
-
-});
+        UserLogin.findOne({username: req.params.coachUsername})
+        .then(user => 
+            CoachProfile.findOne({ user: user._id })
+            .then(coach => {
+                Review.find({ coach: coach._id })
+                .then(reviews =>{
+                    if(reviews.length === 0){
+                        return res.json({message: "No reviews" ,reviews: reviews})
+                    }
+                    const averageRating = reviews.reduce((acc, review) => acc + review.rating, 0) / reviews.length;
+                    CoachProfile.updateOne({user: user._id}, {$set:{rating : Number(averageRating)}})
+                    .then(data => res.json({message: "average rating updated"}))
+                })
+            })
+            )
+            
+        })
+;
 
 router.post('/', (req,res) =>{
 UserLogin.findOne({username: req.body.username})
