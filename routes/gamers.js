@@ -79,7 +79,7 @@ router.put("/profile/:gamer/photo", async (req, res) => {
      const updatedProfile = await UserProfile.updateOne(
        { user: user._id },
        {
-         $set: {photo: cloudinaryResponse.secure_url,}
+         $set: {photo: cloudinaryResponse.secure_url}
        },
        { new: true }
      ).populate("user");
