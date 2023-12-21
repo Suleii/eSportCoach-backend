@@ -20,7 +20,7 @@ router.get("/profile/:coach", (req, res) => {
   });
 });
 
-//Create a PUT /profile route to update the coach informations
+//Create a PUT /profile route to update the gamer informations
 router.put("/profile/:coach", (req, res) => {
   // Search the user ID via his username
   UserLogin.findOne({ username: req.params.coach })
@@ -45,13 +45,8 @@ router.put("/profile/:coach", (req, res) => {
           'socials.youtube': req.body.youtube,
           'socials.discord': req.body.discord,
         },
-        $push: {
+        $set: {
           games: req.body.games,
-          "socials.twitch": req.body.twitch,
-          "socials.instagram": req.body.instagram,
-          "socials.youtube": req.body.youtube,
-          "socials.discord": req.body.discord,
-          about: req.body.about,
           experience: req.body.experience,
           language: req.body.language,
         },
@@ -62,7 +57,7 @@ router.put("/profile/:coach", (req, res) => {
       .then((updatedProfile) => {
         if (!updatedProfile) {
           // Profile not found, send a 404 response
-          res.json({ result: false, message: "Coach profile not found" });
+          res.json({ result: false, message: "Gamer profile not found" });
         } else {
           // Profile was successfully updated, send the updated profile
           res.json({ result: true, profile: updatedProfile });
@@ -89,6 +84,7 @@ router.put("/profile/:coach/photo", async (req, res) => {
     console.log('Received photo:', photo);
 
     // Upload the photo to Cloudinary
+    if (!photo) {
     const cloudinaryResponse = await cloudinary.uploader.upload(photoPath);
     fs.unlinkSync(photoPath);
     console.log('Cloudinary response:', cloudinaryResponse);
@@ -107,9 +103,9 @@ router.put("/profile/:coach/photo", async (req, res) => {
     
       return res.json({ result: false, message: "Coach profile not found" });
     }
-
+  
     //Profile was successfully updated, send the updated profile
-    res.json({ result: true, profile: updatedProfile });
+    res.json({ result: true, profile: updatedProfile });}
   } catch (error) {
     console.error('Error uploading photo:', error);
     res.status(500).json({ result: false, message: "Internal server error", error: error.message });
