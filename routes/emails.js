@@ -140,7 +140,7 @@ router.post("/forgottenpassword", (req, res) => {
       html: `<p>Hi ${username},</p>
         <p>You requested to reset your password.</p>
         <p> Please, click the link below to reset your password</p>
-        <a href="http://localhost:3001/reset-password/${username}/${token}">Reset Password</a>`,
+        <a href="https://experience-frontend.vercel.app/reset-password/${username}/${token}">Reset Password</a>`,
     };
 
     transporter.sendMail(mailOptions, function (error, info) {
